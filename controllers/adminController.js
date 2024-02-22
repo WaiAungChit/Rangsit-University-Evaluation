@@ -204,50 +204,41 @@ const deleteUser = async (req, res) => {
 };
 
 const updateProfilePicture = [
-  (req, res, next) => {
-      upload.single('profilePicture')(req, res, (err) => {
-          if (err instanceof multer.MulterError) {
-              return res.status(400).json({ error: 'An error occurred while uploading the file' });
-          } else if (err) {
-              return res.status(500).json({ error: 'An unknown error occurred' });
-          }
-          next();
-      });
-  },
-  async (req, res) => {
-      const { userId } = req.params;
-
-      if (!mongoose.Types.ObjectId.isValid(userId)) {
-          return res.status(400).json({ error: 'Invalid user ID' });
-      }
-
-      if (!req.file) {
-          return res.status(400).json({ error: 'No file uploaded' });
-      }
-
-      try {
-          // Upload the new image to Cloudinary
-          const result = await new Promise((resolve, reject) => {
-              cloudinary.uploader.upload_stream({ resource_type: "auto" }, (error, result) => {
-                  if (error) reject(error);
-                  else resolve(result);
-              }).end(req.file.buffer);
-          });
-
-          const profilePicture = result.url;
-          const user = await User.findByIdAndUpdate(userId, { profilePicture }, { new: true });
-
-          if (!user) {
-              return res.status(404).json({ error: 'User not found' });
-          }
-
-          res.json(user);
-      } catch (error) {
-          console.error(error);
-          res.status(500).json({ error: 'An error occurred while updating the profile picture' });
-      }
-  }
-];
+    upload.single('profilePicture'),
+    async (req, res) => {
+        const { username } = req.body;
+  
+        if (!username) {
+            return res.status(400).json({ error: 'Username is required' });
+        }
+  
+        if (!req.file) {
+            return res.status(400).json({ error: 'No file uploaded' });
+        }
+  
+        try {
+            // Upload the new image to Cloudinary
+            const result = await new Promise((resolve, reject) => {
+                cloudinary.uploader.upload_stream({ resource_type: "auto" }, (error, result) => {
+                    if (error) reject(error);
+                    else resolve(result);
+                }).end(req.file.buffer);
+            });
+  
+            const profilePicture = result.url;
+            const user = await User.findOneAndUpdate({ username }, { profilePicture }, { new: true });
+  
+            if (!user) {
+                return res.status(404).json({ error: 'User not found' });
+            }
+  
+            res.json("Profile picture updated successfully");
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ error: 'An error occurred while updating the profile picture' });
+        }
+    }
+  ];
 
 const getAllUsers = async (req, res) => {
     try {

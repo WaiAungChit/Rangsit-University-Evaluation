@@ -21,8 +21,12 @@ router.route('/users')
 
 router.route('/users/:userId')
     .all(adminAuth)
-    .delete(adminController.deleteUser)
+    .delete(adminController.deleteUser);
+
+router.route('/update-profile')
+    .all(adminAuth)
     .put(adminController.updateProfilePicture);
+
 
 router.route('/votes')
     .all(adminAuth) 
