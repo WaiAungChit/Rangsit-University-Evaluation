@@ -1,6 +1,18 @@
 const mongoose = require('mongoose');
 const User = require('../models/userSchema');
 
+const loginUser = async (req, res) => {
+  try {
+    const user = await User.findOne({ username: req.body.username });
+    if (!user) {
+      return res.status(400).json({ message: 'Invalid username' });
+    }
+    res.json({ userId: user._id });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
 const getAllUsersExceptCurrent = async (req, res) => {
     const { userId } = req.params;
 
@@ -34,5 +46,5 @@ const getUserbyID = async (req, res) => {
 };
 
 module.exports = {
-    getAllUsersExceptCurrent,getUserbyID
+    loginUser,getAllUsersExceptCurrent,getUserbyID
 };
