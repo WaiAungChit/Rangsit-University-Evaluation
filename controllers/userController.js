@@ -7,6 +7,19 @@ const loginUser = async (req, res) => {
     if (!user) {
       return res.status(400).json({ message: 'Invalid username' });
     }
+
+    if (user.attemptResetTime && Date.now() - user.attemptResetTime.getTime() < 24 * 60 * 60 * 1000) {
+      if (user.loginAttempts >= 3) {
+        return res.status(400).json({ message: 'You have exceeded the maximum number of login attempts. Please try again in 24 hours.' });
+      }
+    } else {
+      user.loginAttempts = 0;
+      user.attemptResetTime = Date.now();
+    }
+
+    user.loginAttempts++;
+    await user.save();
+
     res.json({ userId: user._id });
   } catch (err) {
     res.status(500).json({ message: err.message });

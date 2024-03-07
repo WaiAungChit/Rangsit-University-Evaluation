@@ -37,7 +37,17 @@ const UserSchema = new mongoose.Schema({
         type: Number,
         default: 3
     },
+
+    loginAttempts: {
+        type: Number,
+        required: true,
+        default: 0
+      },
     
+      attemptResetTime: {
+        type: Date
+      },
+      
     votes: [{ 
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Vote' 
