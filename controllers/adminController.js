@@ -291,6 +291,23 @@ const updateVoteLimit = async (req, res) => {
     }
 };
 
+const updateLoginAttempts = async (req, res) => {
+    const { loginAttempts } = req.body;
+
+    if (typeof loginAttempts !== 'number' || loginAttempts < 0) {
+        return res.status(400).json({ msg: 'Invalid login attempts limit' });
+    }
+
+    try {
+        await User.updateMany({}, { loginAttempts });
+
+        res.json({ msg: 'Login attempts updated successfully for all users' });
+    } catch (err) {
+        console.error(err); 
+        res.status(500).json({ msg: 'An error occurred' });
+    }
+};
+
 module.exports = {
     signup,
     login,
@@ -303,5 +320,6 @@ module.exports = {
     updateProfilePicture,
     getAllUsers,
     getAllVotes,
-    updateVoteLimit
+    updateVoteLimit,
+    updateLoginAttempts
 };

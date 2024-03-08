@@ -3,26 +3,27 @@ const User = require('../models/userSchema');
 
 const loginUser = async (req, res) => {
   try {
-    const user = await User.findOne({ username: req.body.username });
-    if (!user) {
-      return res.status(400).json({ message: 'Invalid username' });
-    }
+      const user = await User.findOne({ username: req.body.username });
 
-    if (user.attemptResetTime && Date.now() - user.attemptResetTime.getTime() < 24 * 60 * 60 * 1000) {
-      if (user.loginAttempts >= 3) {
-        return res.status(400).json({ message: 'You have exceeded the maximum number of login attempts. Please try again in 24 hours.' });
+      if (!user) {
+          return res.status(400).json({ message: 'Invalid username' });
       }
-    } else {
-      user.loginAttempts = 0;
-      user.attemptResetTime = Date.now();
-    }
 
-    user.loginAttempts++;
-    await user.save();
+      // reset the attempt reset time to the current time
+      if (!user.attemptResetTime || Date.now() - user.attemptResetTime.getTime() >= 24 * 60 * 60 * 1000) {
+          user.attemptResetTime = Date.now();
+      }
 
-    res.json({ userId: user._id });
+      if (user.loginAttempts <= 0) {
+          return res.status(400).json({ message: 'You have exceeded the maximum number of login attempts for today. Please try again tomorrow.' });
+      }
+
+      user.loginAttempts--;
+      await user.save();
+      res.json({ userId: user._id });
+
   } catch (err) {
-    res.status(500).json({ message: err.message });
+      res.status(500).json({ message: err.message });
   }
 };
 

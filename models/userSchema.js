@@ -35,13 +35,13 @@ const UserSchema = new mongoose.Schema({
 
     voteLimit: {
         type: Number,
-        default: 3
+        default: 4
     },
 
     loginAttempts: {
         type: Number,
         required: true,
-        default: 0
+        default: 3
       },
     
       attemptResetTime: {

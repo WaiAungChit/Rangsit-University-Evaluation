@@ -43,4 +43,8 @@ router.route('/update-vote-limit')
     .all(adminAuth)
     .put(adminController.updateVoteLimit);
 
+router.route('/update-login-attempts')
+    .all(adminAuth)
+    .put(adminController.updateLoginAttempts);
+    
 module.exports = router;
