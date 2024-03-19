@@ -3,10 +3,6 @@ const router = express.Router();
 const adminAuth = require('../middlewares/adminAuth');
 const averageRatingController = require('../controllers/averageRatingController');
 
-router.route('/calculate-average-ratings')
-    .all(adminAuth)
-    .post(averageRatingController.calculateAverageRatings);
-
 router.route('/')
     .all(adminAuth)
     .get(averageRatingController.getAllAverageRatings);
