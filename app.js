@@ -5,6 +5,7 @@ const cron = require('node-cron');
 const userRoutes = require('./routes/userRoute');
 const voteRoutes = require('./routes/voteRoute');
 const adminRoutes = require('./routes/adminRoute');
+const averageRatingRoutes = require('./routes/averageRatingRoute');
 const User = require('./models/userSchema'); 
 const cors = require("cors");
 const rateLimit = require("express-rate-limit");
@@ -40,6 +41,7 @@ app.use(limiter);
 app.use('/api/users', userRoutes);
 app.use('/api/votes', voteRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/averagerating',averageRatingRoutes);
 
 // Start the server
 const port = process.env.PORT || 8000;

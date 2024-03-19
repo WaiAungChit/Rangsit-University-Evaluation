@@ -248,7 +248,7 @@ const getAllUsers = async (req, res) => {
             { path: 'userId', select: 'username -_id' },
             { path: 'votedFor', select: 'username -_id' }
         ]
-    });
+    }).populate('averageRatings');
         res.json(users);
     } catch (error) {
         console.error(error);

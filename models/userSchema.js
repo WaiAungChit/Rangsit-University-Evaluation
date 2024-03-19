@@ -52,6 +52,13 @@ const UserSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Vote' 
     }],
+
+    averageRatings: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'AverageRating'
+        }
+    ]
 }, 
 { timestamps: true });
 

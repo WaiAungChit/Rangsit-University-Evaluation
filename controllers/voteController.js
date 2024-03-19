@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Vote = require('../models/voteSchema'); 
 const User = require('../models/userSchema');
+const averageRatingController = require('../controllers/averageRatingController');
 
 const vote = async (req, res) => {
     const { userId, votedFor, variable, rating } = req.body;
@@ -35,6 +36,9 @@ const vote = async (req, res) => {
         const savedVote = await vote.save();
 
         await User.findByIdAndUpdate(userId, { $push: { votes: savedVote._id }, $inc: { voteLimit: -1 } });
+
+        // after saving the vote, calculate the average ratings
+        await averageRatingController.calculateAverageRatings();
 
         res.json(savedVote);
     } catch (err) {
